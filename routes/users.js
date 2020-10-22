@@ -1,36 +1,27 @@
-const express = require('express');
-const router = express.Router();
-const { pool, query } = require('../models/db');
+var express = require('express');
+var router = express.Router();
+const { query } = require('../models/db');
 
 router.get('/', function (req, res, next) {
-  const sql = 'SELECT * FROM meeps';
-
-  pool.query(sql, function (err, result, fields) {
-    if (err) throw err;
-    res.json({
-      status: 200,
-      result
-    });
-  });
+  res.render('users', { title: 'Userpage', users: ['Hans', 'Moa', 'Bengt', 'Frans', 'Lisa'] });
 });
 
-
-router.get('id/', function (req, res, next) {
+router.get('/:id', async function (req, res, next) {
   try {
-    const user = query(
-      'SELECT *FROM users WHERE id = ?',
+    const user = await query(
+      'SELECT * FROM users WHERE id = ?',
       req.params.id
     );
 
-    const meeps = query(
-      'SELECT *FROM meeps WHERE id = ?',
+    const story = await query(
+      'SELECT * FROM story WHERE story_id = ?',
       req.params.id
-    )
+    );
 
-    res.json({
-      status: 200,
-      users: user,
-      meeps: meeps
+    res.render('index', {
+      id: req.params.id,
+      user: user,
+      story: story
     });
   } catch (e) {
     console.error(e);
@@ -38,7 +29,5 @@ router.get('id/', function (req, res, next) {
   }
 });
 
-
-
-
 module.exports = router;
+

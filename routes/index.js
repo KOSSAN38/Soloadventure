@@ -1,31 +1,27 @@
 var express = require('express');
 var router = express.Router();
-const { pool } = require('../models/db');
-
+const { query } = require('../models/db');
 
 router.get('/', function (req, res, next) {
-  const sql = 'SELECT * FROM story';
-
-  pool.query(sql, function (err, result, fields) {
-    if (err) throw err;
-    res.json({
-      status: 200,
-      result
-    });
-  });
+  res.render('users', { title: 'Userpage', users: ['Hans', 'Moa', 'Bengt', 'Frans', 'Lisa'] });
 });
 
-router.get('/:id', function (req, res, next) {
-  const sql = 'SELECT * FROM story WHERE id = ?';
+router.get('/:id', async function (req, res, next) {
+  try {
 
-  pool.query(sql, [req.params.id], function (err, result, fields) {
-    if (err) throw err;
-    res.json({
-      status: 200,
+    const story = await query(
+      'SELECT * FROM story WHERE story_id = ?',
+      req.params.id
+    );
+
+    res.render('index', {
       id: req.params.id,
-      result: result
+      story: story
     });
-  });
+  } catch (e) {
+    console.error(e);
+    next(e);
+  }
 });
 
 module.exports = router;
