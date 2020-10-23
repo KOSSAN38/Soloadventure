@@ -3,25 +3,25 @@ var router = express.Router();
 const { query } = require('../models/db');
 
 router.get('/', function (req, res, next) {
-    res.render('users', { title: 'Userpage', users: ['Hans', 'Moa', 'Bengt', 'Frans', 'Lisa'] });
+    res.render('story', { title: 'Userpage', users: ['Hans', 'Moa', 'Bengt', 'Frans', 'Lisa'] });
 });
 
 router.get('/:id', async function (req, res, next) {
     try {
-        const user = await query(
-            'SELECT * FROM users WHERE id = ?',
-            req.params.id
-        );
-
         const story = await query(
-            'SELECT * FROM story WHERE story_id = ?',
+            'SELECT * FROM story WHERE id = ?',
             req.params.id
         );
 
-        res.render('index', {
+        const links = await query(
+            'SELECT * FROM links WHERE story_id = ?',
+            req.params.id
+        );
+
+        res.json({
             id: req.params.id,
-            user: user,
-            story: story
+            story: story,
+            links: links
         });
     } catch (e) {
         console.error(e);
