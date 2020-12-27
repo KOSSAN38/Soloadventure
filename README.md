@@ -2,6 +2,7 @@
 
 
 Planering/ TODO:
+länk till figma: https://www.figma.com/file/yVaNqkHJ2fEYZhDrMlr5Zl/Fula-ankungen?node-id=2%3A0
 
 
 In progress:
